@@ -1,0 +1,24 @@
+Ask 1)
+    YAML:
+        apiVersion: v1
+        kind: Pod
+        metadata:
+        name: demo
+        spec:
+        containers:
+        - name: nginx
+            image: nginx:1.21.6-alpine
+            ports:
+            - containerPort: 80
+            name: http
+            protocol: TCP
+            
+    a)kubectl apply -f nginx.yaml
+    b)kubectl port-forwatd [name] 80
+    c)kubectl logs [name]
+    d)kubectl ecec [name] -i -t -- ash
+        vi usr/share/nginx/html/index.html
+    f)kubectl delete -f nginx.yaml
+
+ask2)logs
+ask3)throught a common memory space 

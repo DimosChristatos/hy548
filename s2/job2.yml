@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: sevenshot
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: site
+        image: ubuntu:20.04
+        args: # Docker image CMD
+        - "./scripts/test.sh"
+        volumeMounts:
+        - name: test-script
+          mountPath: /scripts
+        - name: site
+          mountPath: /usr/share/nginx/html
+      volumes:
+      - name: test-script
+        configMap:
+          name: test-script
+          defaultMode : 0744
+      - name: site
+        persistentVolumeClaim:
+          claimName: 'site'
