@@ -1,0 +1,103 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: flask-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /first
+        pathType: Prefix
+        backend:
+          service:
+            name: flask
+            port:
+              number: 8080
+      - path: /second
+        pathType: Prefix
+        backend:
+          service:
+            name: flask2
+            port:
+              number: 8090        
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flask
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+  selector:
+    app: flask
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flask2
+spec:
+  type: NodePort
+  ports:
+  - port: 8090
+  selector:
+    app: flask2
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flask2
+  template:
+    metadata:
+      labels:
+        app: flask2
+    spec:
+      containers:
+      - name: flask2
+        image: dimonic/hy548ex3:2
+        resources:
+          limits:
+            cpu: "200m"
+            memory: "128Mi"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flask
+  template:
+    metadata:
+      labels:
+        app: flask
+    spec:
+      containers:
+      - name: flask
+        image: dimonic/hy548ex3:1
+        resources:
+          limits:
+            cpus: "0.2"
+            memory: "256Mi"
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: php-apache
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: php-apache
+  minReplicas: 1
+  maxReplicas: 8
+  targetCPUUtilizationPercentage: 50
