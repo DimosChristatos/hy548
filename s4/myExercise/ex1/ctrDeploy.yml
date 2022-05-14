@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: greetingcontroldeployment
+  labels:
+    app: greetingcontroldeployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: greetingcontroldeployment
+  template:
+    metadata:
+      labels:
+        app: greetingcontroldeployment
+        namespace: default
+    spec:
+      serviceAccountName: myaccount
+      containers:
+      - name: controller
+        image: dimonic/pycon:latest
+

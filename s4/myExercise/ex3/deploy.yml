@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ctr-dep
+  labels:
+    app: ctr-dep
+spec:    
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ctr-dep
+  template:
+    metadata:
+      labels:
+        app: ctr-dep
+        namespace: default
+    spec:
+      serviceAccountName: myaccount
+      containers:
+      - name: ctr
+        image: dimonic/s4ex3:latest
+
